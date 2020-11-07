@@ -16,6 +16,10 @@ window.bing.addEventListener('click', () => (translator = new Bing()).setUrl());
 window.text.addEventListener('input', () => translator && translator.setUrl());
 
 class Translator {
+  constructor(url) {
+    this.url = new URL(`https://${url}`);
+  }
+
   get text() {
     return window.text.value.replace(/^\s+|\s+$/, '');
   }
@@ -32,8 +36,7 @@ class Translator {
 
 class DeepL extends Translator {
   constructor() {
-    super();
-    this.url = new URL('https://www.deepl.com/translator');
+    super('www.deepl.com/translator');
   }
 
   setUrl() {
@@ -44,8 +47,7 @@ class DeepL extends Translator {
 
 class Google extends Translator {
   constructor() {
-    super();
-    this.url = new URL('https://translate.google.com');
+    super('translate.google.com');
   }
 
   setUrl() {
@@ -56,8 +58,7 @@ class Google extends Translator {
 
 class Bing extends Translator {
   constructor() {
-    super();
-    this.url = new URL('https://www.bing.com/translator');
+    super('www.bing.com/translator');
   }
 
   setUrl() {
