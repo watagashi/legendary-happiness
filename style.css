@@ -1,3 +1,4 @@
-textarea, input {
+textarea,
+input[type='text'] {
   width: calc(100vw - 20px);
 }

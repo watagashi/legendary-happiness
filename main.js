@@ -18,7 +18,8 @@ class Translator {
 
   open() {
     window['url'].value = this.url;
-    open(this.url);
+    if (!window['open-window'].checked) window.location = this.url;
+    window.open(this.url);
   }
 }
 
