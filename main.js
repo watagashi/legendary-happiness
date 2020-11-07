@@ -2,29 +2,44 @@ window.addEventListener('load', function () {
   window.text.focus();
 });
 
-window['button-deepl'].addEventListener('click', function () {
-  const url = new URL('https://www.deepl.com/translator');
-  url.hash = `en/ja/${trim(window.text.value)}`;
-  setUrl(url);
-});
+window['button-deepl'].addEventListener('click', () => new DeepL().open());
+window['button-google'].addEventListener('click', () => new Google().open());
+window['button-bing'].addEventListener('click', () => new Bing().open());
 
-window['button-google'].addEventListener('click', function () {
-  const url = new URL('https://translate.google.com');
-  url.hash = `en/ja/${trim(window.text.value)}`;
-  setUrl(url);
-});
+class Translator {
+  setUrlWithHash(urlString) {
+    this.url = new URL(urlString);
+    this.url.hash = `auto/ja/${this.text}`;
+  }
 
-window['button-bing'].addEventListener('click', function () {
-  const url = new URL('https://www.bing.com/translator');
-  url.search = ['to=ja', `text=${trim(window.text.value)}`].join('&');
-  setUrl(url);
-});
+  get text() {
+    return window.text.value.replace(/^\s+|\s+$/, '');
+  }
 
-function trim(text) {
-  return text.replace(/^\s+|[\s\r\n]+$/, '');
+  open() {
+    window['url'].value = this.url;
+    open(this.url);
+  }
 }
 
-function setUrl(url) {
-  window['url'].value = url;
-  open(url);
+class DeepL extends Translator {
+  constructor() {
+    super();
+    this.setUrlWithHash('https://www.deepl.com/translator');
+  }
+}
+
+class Google extends Translator {
+  constructor() {
+    super();
+    this.setUrlWithHash('https://translate.google.com');
+  }
+}
+
+class Bing extends Translator {
+  constructor() {
+    super();
+    this.url = new URL('https://www.bing.com/translator');
+    this.url.search = ['to=ja', `text=${this.text}`].join('&');
+  }
 }
