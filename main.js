@@ -1,39 +1,56 @@
-window.addEventListener('load', function () {
+window.addEventListener('load', () => {
+  setTarget();
   window.text.focus();
 });
 
-window['button-deepl'].addEventListener('click', () => new DeepL().open());
-window['button-google'].addEventListener('click', () => new Google().open());
-window['button-bing'].addEventListener('click', () => new Bing().open());
+window['check-open-window'].addEventListener('change', setTarget);
+
+function setTarget() {
+  window.url.target = window['check-open-window'].checked ? '_blank' : '_self';
+}
+
+let translator;
+window.deepl.addEventListener('click', () => (translator = new DeepL()).setUrl());
+window.google.addEventListener('click', () => (translator = new Google()).setUrl());
+window.bing.addEventListener('click', () => (translator = new Bing()).setUrl());
+window.text.addEventListener('input', () => translator && translator.setUrl());
 
 class Translator {
-  setUrlWithHash(urlString) {
-    this.url = new URL(urlString);
-    this.url.hash = `auto/ja/${this.text}`;
-  }
-
   get text() {
     return window.text.value.replace(/^\s+|\s+$/, '');
   }
 
-  open() {
-    window['url'].value = this.url;
-    if (!window['open-window'].checked) window.location = this.url;
-    window.open(this.url);
+  setHash() {
+    this.url.hash = `auto/ja/${this.text}`;
+  }
+
+  setUrl() {
+    window.url.href = this.url;
+    window.url.textContent = this.url;
   }
 }
 
 class DeepL extends Translator {
   constructor() {
     super();
-    this.setUrlWithHash('https://www.deepl.com/translator');
+    this.url = new URL('https://www.deepl.com/translator');
+  }
+
+  setUrl() {
+    this.setHash();
+    super.setUrl();
   }
 }
 
 class Google extends Translator {
   constructor() {
     super();
-    this.setUrlWithHash('https://translate.google.com');
+    this.url = new URL('https://translate.google.com');
+  }
+
+  setUrl() {
+    this.setHash();
+    super.setUrl();
   }
 }
 
@@ -41,6 +58,10 @@ class Bing extends Translator {
   constructor() {
     super();
     this.url = new URL('https://www.bing.com/translator');
+  }
+
+  setUrl() {
     this.url.search = ['to=ja', `text=${this.text}`].join('&');
+    super.setUrl();
   }
 }

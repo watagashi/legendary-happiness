@@ -1,4 +1,12 @@
-textarea,
-input[type='text'] {
-  width: calc(100vw - 20px);
+textarea {
+  width: calc(100vw - 24px);
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis > a {
+  white-space: pre;
 }
