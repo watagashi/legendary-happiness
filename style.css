@@ -2,6 +2,10 @@ textarea {
   width: calc(100vw - 24px);
 }
 
+fieldset {
+  display: inline-block;
+}
+
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;

@@ -14,6 +14,7 @@ window.deepl.addEventListener('click', () => (translator = new DeepL()).setUrl()
 window.google.addEventListener('click', () => (translator = new Google()).setUrl());
 window.bing.addEventListener('click', () => (translator = new Bing()).setUrl());
 window.text.addEventListener('input', () => translator && translator.setUrl());
+document.getElementsByName('translate-to').forEach((node) => node.addEventListener('change', () => translator && translator.setUrl()));
 
 class Translator {
   constructor(url) {
@@ -24,8 +25,13 @@ class Translator {
     return window.text.value.replace(/^\s+|\s+$/, '');
   }
 
+  get to() {
+    const checked = Array.prototype.find.call(document.getElementsByName('translate-to'), (node) => node.checked);
+    return checked && checked.id.replace(/^to-/, '') || 'ja';
+  }
+
   setHash() {
-    this.url.hash = `auto/ja/${this.text}`;
+    this.url.hash = `auto/${this.to}/${this.text}`;
   }
 
   setUrl() {
@@ -62,7 +68,7 @@ class Bing extends Translator {
   }
 
   setUrl() {
-    this.url.search = ['to=ja', `text=${this.text}`].join('&');
+    this.url.search = [`to=${this.to}`, `text=${this.text}`].join('&');
     super.setUrl();
   }
 }
