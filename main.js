@@ -22,7 +22,7 @@ class Translator {
   }
 
   get text() {
-    return window.text.value.replace(/^\s+|\s+$/, '');
+    return encodeURIComponent(window.text.value.replace(/^\s+|\s+$/, ''));
   }
 
   get to() {
@@ -47,6 +47,7 @@ class DeepL extends Translator {
 
   setUrl() {
     this.setHash();
+    this.url.hash = this.url.hash.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
     super.setUrl();
   }
 }
