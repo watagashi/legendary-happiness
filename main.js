@@ -22,7 +22,7 @@ class Translator {
   }
 
   get text() {
-    return encodeURIComponent(window.text.value.replace(/^\s+|\s+$/, ''));
+    return encodeURIComponent(window.text.value.replace(/^\s+|\s+$/g, ''));
   }
 
   get to() {
