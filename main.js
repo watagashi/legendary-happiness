@@ -27,7 +27,7 @@ class Translator {
 
   get to() {
     const checked = Array.prototype.find.call(document.getElementsByName('translate-to'), (node) => node.checked);
-    return checked && checked.id.replace(/^to-/, '') || 'ja';
+    return (checked && checked.value) || 'ja';
   }
 
   setHash() {
