@@ -6,6 +6,10 @@ fieldset {
   display: inline-block;
 }
 
+fieldset label {
+  white-space: nowrap;
+}
+
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
