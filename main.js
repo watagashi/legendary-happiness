@@ -69,7 +69,7 @@ class Bing extends Translator {
   }
 
   setUrl() {
-    this.url.search = [`to=${this.to}`, `text=${this.text}`].join('&');
+    this.url.search = [`to=${this.to}`, `text=${this.text.replace(/%20/g, '+')}`].join('&');
     super.setUrl();
   }
 }
