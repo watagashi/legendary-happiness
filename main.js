@@ -13,6 +13,7 @@ let translator;
 window.deepl.addEventListener('click', () => (translator = new DeepL()).setUrl());
 window.google.addEventListener('click', () => (translator = new Google()).setUrl());
 window.bing.addEventListener('click', () => (translator = new Bing()).setUrl());
+window.papago.addEventListener('click', () => (translator = new Papago()).setUrl());
 window.baidu.addEventListener('click', () => (translator = new Baidu()).setUrl());
 window.text.addEventListener('input', () => translator && translator.setUrl());
 document.getElementsByName('translate-to').forEach((node) => node.addEventListener('change', () => translator && translator.setUrl()));
@@ -87,6 +88,17 @@ class Bing extends Translator {
 
   setUrl() {
     this.url.search = [`to=${this.to}`, `text=${this.text.replace(/%20/g, '+')}`].join('&');
+    super.setUrl();
+  }
+}
+
+class Papago extends Translator {
+  constructor() {
+    super('papago.naver.com');
+  }
+
+  setUrl() {
+    this.url.search = [`tk=${this.to}`, `st=${this.text}`].join('&');
     super.setUrl();
   }
 }
