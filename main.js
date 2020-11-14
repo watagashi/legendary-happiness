@@ -13,6 +13,7 @@ let translator;
 window.deepl.addEventListener('click', () => (translator = new DeepL()).setUrl());
 window.google.addEventListener('click', () => (translator = new Google()).setUrl());
 window.bing.addEventListener('click', () => (translator = new Bing()).setUrl());
+window.baidu.addEventListener('click', () => (translator = new Baidu()).setUrl());
 window.text.addEventListener('input', () => translator && translator.setUrl());
 document.getElementsByName('translate-to').forEach((node) => node.addEventListener('change', () => translator && translator.setUrl()));
 
@@ -60,6 +61,22 @@ class Google extends Translator {
   setUrl() {
     this.setHash();
     super.setUrl();
+  }
+}
+
+class Baidu extends Translator {
+  constructor() {
+    super('fanyi.baidu.com');
+  }
+
+  setUrl() {
+    this.setHash();
+    super.setUrl();
+  }
+
+  get to() {
+    const lang = super.to;
+    return lang === 'ja' ? 'jp' : lang;
   }
 }
 
