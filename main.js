@@ -47,9 +47,12 @@ class DeepL extends Translator {
     super('www.deepl.com/translator');
   }
 
+  setHash() {
+    this.url.hash = `${this.to === 'ja' ? 'en' : 'ja'}/${this.to}/${this.text}`.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
+  }
+
   setUrl() {
     this.setHash();
-    this.url.hash = this.url.hash.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
     super.setUrl();
   }
 }
