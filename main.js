@@ -18,25 +18,31 @@ window.baidu.addEventListener('click', () => (translator = new Baidu()).setUrl()
 window.text.addEventListener('input', () => translator && translator.setUrl());
 document.getElementsByName('translate-to').forEach((node) => node.addEventListener('change', () => translator && translator.setUrl()));
 
-class Translator {
-  constructor(url) {
-    this.url = new URL(`https://${url}`);
-  }
-
-  get text() {
+class Form {
+  static get text() {
     return encodeURIComponent(window.text.value.replace(/^\s+|\s+$/g, ''));
   }
 
-  get to() {
+  static get to() {
     const checked = Array.prototype.find.call(document.getElementsByName('translate-to'), (node) => node.checked);
     return (checked && checked.value) || 'ja';
+  }
+
+  static set url(value) {
+    window.url.href = window.url.textContent = value;
+  }
+}
+
+class Translator {
+  constructor(url) {
+    this.url = new URL(`https://${url}`);
   }
 
   setHash() {}
 
   setUrl() {
     this.setHash();
-    window.url.href = window.url.textContent = this.url;
+    Form.url = this.url;
   }
 }
 
@@ -46,7 +52,7 @@ class DeepL extends Translator {
   }
 
   setHash() {
-    this.url.hash = `${this.to === 'ja' ? 'en' : 'ja'}/${this.to}/${this.text}`.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
+    this.url.hash = `${Form.to === 'ja' ? 'en' : 'ja'}/${Form.to}/${Form.text}`.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
   }
 }
 
@@ -56,7 +62,7 @@ class Google extends Translator {
   }
 
   setHash() {
-    this.url.hash = `auto/${this.to}/${this.text}`;
+    this.url.hash = `auto/${Form.to}/${Form.text}`;
   }
 }
 
@@ -66,7 +72,7 @@ class Baidu extends Translator {
   }
 
   setHash() {
-    this.url.hash = `auto/${this.to === 'ja' ? 'jp' : this.to}/${this.text}`;
+    this.url.hash = `auto/${Form.to === 'ja' ? 'jp' : Form.to}/${Form.text}`;
   }
 }
 
@@ -76,7 +82,7 @@ class Bing extends Translator {
   }
 
   setHash() {
-    this.url.search = [`to=${this.to}`, `text=${this.text.replace(/%20/g, '+')}`].join('&');
+    this.url.search = [`to=${Form.to}`, `text=${Form.text.replace(/%20/g, '+')}`].join('&');
   }
 }
 
@@ -86,6 +92,6 @@ class Papago extends Translator {
   }
 
   setHash() {
-    this.url.search = [`tk=${this.to}`, `st=${this.text}`].join('&');
+    this.url.search = [`tk=${Form.to}`, `st=${Form.text}`].join('&');
   }
 }
