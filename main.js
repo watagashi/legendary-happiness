@@ -1,13 +1,6 @@
 window.addEventListener('load', () => {
-  setTarget();
   window.text.focus();
 });
-
-window['check-open-window'].addEventListener('change', setTarget);
-
-function setTarget() {
-  window.url.target = window['check-open-window'].checked ? '_blank' : '_self';
-}
 
 let translator;
 window.deepl.addEventListener('click', () => {
@@ -42,6 +35,7 @@ window.baidu.addEventListener('click', () => {
 });
 window.text.addEventListener('input', () => translator && translator.setUrl());
 document.getElementsByName('translate-to').forEach((node) => node.addEventListener('change', () => translator && translator.setUrl()));
+window['check-open-window'].addEventListener('change', () => translator && translator.setUrl());
 
 class Form {
   static get text() {
@@ -54,6 +48,7 @@ class Form {
   }
 
   static set url(value) {
+    window.url.target = window['check-open-window'].checked ? '_blank' : '_self';
     window.url.href = window.url.textContent = value;
   }
 }
