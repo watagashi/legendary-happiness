@@ -32,13 +32,11 @@ class Translator {
     return (checked && checked.value) || 'ja';
   }
 
-  setHash() {
-    this.url.hash = `auto/${this.to}/${this.text}`;
-  }
+  setHash() {}
 
   setUrl() {
-    window.url.href = this.url;
-    window.url.textContent = this.url;
+    this.setHash();
+    window.url.href = window.url.textContent = this.url;
   }
 }
 
@@ -50,11 +48,6 @@ class DeepL extends Translator {
   setHash() {
     this.url.hash = `${this.to === 'ja' ? 'en' : 'ja'}/${this.to}/${this.text}`.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
   }
-
-  setUrl() {
-    this.setHash();
-    super.setUrl();
-  }
 }
 
 class Google extends Translator {
@@ -62,9 +55,8 @@ class Google extends Translator {
     super('translate.google.com');
   }
 
-  setUrl() {
-    this.setHash();
-    super.setUrl();
+  setHash() {
+    this.url.hash = `auto/${this.to}/${this.text}`;
   }
 }
 
@@ -73,14 +65,8 @@ class Baidu extends Translator {
     super('fanyi.baidu.com');
   }
 
-  setUrl() {
-    this.setHash();
-    super.setUrl();
-  }
-
-  get to() {
-    const lang = super.to;
-    return lang === 'ja' ? 'jp' : lang;
+  setHash() {
+    this.url.hash = `auto/${this.to === 'ja' ? 'jp' : this.to}/${this.text}`;
   }
 }
 
@@ -89,9 +75,8 @@ class Bing extends Translator {
     super('www.bing.com/translator');
   }
 
-  setUrl() {
+  setHash() {
     this.url.search = [`to=${this.to}`, `text=${this.text.replace(/%20/g, '+')}`].join('&');
-    super.setUrl();
   }
 }
 
@@ -100,8 +85,7 @@ class Papago extends Translator {
     super('papago.naver.com');
   }
 
-  setUrl() {
+  setHash() {
     this.url.search = [`tk=${this.to}`, `st=${this.text}`].join('&');
-    super.setUrl();
   }
 }
