@@ -10,11 +10,36 @@ function setTarget() {
 }
 
 let translator;
-window.deepl.addEventListener('click', () => (translator = new DeepL()).setUrl());
-window.google.addEventListener('click', () => (translator = new Google()).setUrl());
-window.bing.addEventListener('click', () => (translator = new Bing()).setUrl());
-window.papago.addEventListener('click', () => (translator = new Papago()).setUrl());
-window.baidu.addEventListener('click', () => (translator = new Baidu()).setUrl());
+window.deepl.addEventListener('click', () => {
+  translator = new Translator('www.deepl.com/translator', function () {
+    this.url.hash = `${Form.to === 'ja' ? 'en' : 'ja'}/${Form.to}/${Form.text}`.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
+  });
+  translator.setUrl();
+});
+window.google.addEventListener('click', () => {
+  translator = new Translator('translate.google.com', function () {
+    this.url.hash = `auto/${Form.to}/${Form.text}`;
+  });
+  translator.setUrl();
+});
+window.bing.addEventListener('click', () => {
+  translator = new Translator('www.bing.com/translator', function () {
+    this.url.search = [`to=${Form.to}`, `text=${Form.text.replace(/%20/g, '+')}`].join('&');
+  });
+  translator.setUrl();
+});
+window.papago.addEventListener('click', () => {
+  translator = new Translator('papago.naver.com', function () {
+    this.url.search = [`tk=${Form.to}`, `st=${Form.text}`].join('&');
+  });
+  translator.setUrl();
+});
+window.baidu.addEventListener('click', () => {
+  translator = new Translator('fanyi.baidu.com', function () {
+    this.url.hash = `auto/${Form.to === 'ja' ? 'jp' : Form.to}/${Form.text}`;
+  });
+  translator.setUrl();
+});
 window.text.addEventListener('input', () => translator && translator.setUrl());
 document.getElementsByName('translate-to').forEach((node) => node.addEventListener('change', () => translator && translator.setUrl()));
 
@@ -34,64 +59,13 @@ class Form {
 }
 
 class Translator {
-  constructor(url) {
+  constructor(url, setHash) {
     this.url = new URL(`https://${url}`);
+    this.setHash = setHash;
   }
-
-  setHash() {}
 
   setUrl() {
     this.setHash();
     Form.url = this.url;
-  }
-}
-
-class DeepL extends Translator {
-  constructor() {
-    super('www.deepl.com/translator');
-  }
-
-  setHash() {
-    this.url.hash = `${Form.to === 'ja' ? 'en' : 'ja'}/${Form.to}/${Form.text}`.replace(/%2F/gi, '\\$&'); // escape slash (%2F)
-  }
-}
-
-class Google extends Translator {
-  constructor() {
-    super('translate.google.com');
-  }
-
-  setHash() {
-    this.url.hash = `auto/${Form.to}/${Form.text}`;
-  }
-}
-
-class Baidu extends Translator {
-  constructor() {
-    super('fanyi.baidu.com');
-  }
-
-  setHash() {
-    this.url.hash = `auto/${Form.to === 'ja' ? 'jp' : Form.to}/${Form.text}`;
-  }
-}
-
-class Bing extends Translator {
-  constructor() {
-    super('www.bing.com/translator');
-  }
-
-  setHash() {
-    this.url.search = [`to=${Form.to}`, `text=${Form.text.replace(/%20/g, '+')}`].join('&');
-  }
-}
-
-class Papago extends Translator {
-  constructor() {
-    super('papago.naver.com');
-  }
-
-  setHash() {
-    this.url.search = [`tk=${Form.to}`, `st=${Form.text}`].join('&');
   }
 }
